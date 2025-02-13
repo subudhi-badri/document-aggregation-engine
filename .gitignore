@@ -1,0 +1,8 @@
+# Ignore output files
+
+forgery_detection/LinkedIn/services/outputs/linkedin_profiles/*
+forgery_detection/LinkedIn/services/outputs/profile_json/*
+
+# Ignore backup files
+*.backup
+
