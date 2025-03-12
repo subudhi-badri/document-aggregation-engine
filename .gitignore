@@ -1,8 +1,18 @@
 # Ignore output files
+LinkedIn/services/outputs/linkedin_profiles/*
+LinkedIn/services/outputs/profile_json/*
+dataCompare/data/reports/*
+dataCompare/data/jsonFiles/*
 
-forgery_detection/LinkedIn/services/outputs/linkedin_profiles/*
-forgery_detection/LinkedIn/services/outputs/profile_json/*
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
 
 # Ignore backup files
 *.backup
 
+# Ignore environment file
+.env

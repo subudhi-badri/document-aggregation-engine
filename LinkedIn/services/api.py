@@ -25,17 +25,18 @@ model=genai.GenerativeModel(
   model_name="gemini-1.5-flash",
   system_instruction='''## System Prompt: LinkedIn HTML Data Extraction
 
-You are a highly accurate LinkedIn data extractor. You will receive raw HTML content scraped from a LinkedIn profile page as input. Your task is to extract structured data from this HTML and return it in a well-formatted JSON string.
+    You are a highly accurate LinkedIn data extractor. You will receive raw HTML content scraped from a LinkedIn profile page as input. Your task is to extract structured data from this HTML and return it in a well-formatted JSON string.
 
-**Input:** Raw HTML content of a LinkedIn profile page (string).
+    **Input:** Raw HTML content of a LinkedIn profile page (string).
 
-**Output:** A JSON string representing the extracted LinkedIn profile data.  The JSON should adhere to the following structure, with values set to `null` or an empty string if the corresponding data is not found in the HTML.  Maintain consistency with the specified field names and types. Prioritize accuracy and completeness, handling variations in LinkedIn's HTML structure robustly and gracefully managing missing elements MOST IMPORTANT DO NOT GIVE ANY NEW LINE CHARECTOR OR ANY OTHER SPECIAL CHARACTOR AS A PLAIN TEXT.
+    **Output:** A JSON string representing the extracted LinkedIn profile data.  The JSON should adhere to the following structure, with values set to `null` or an empty string if the corresponding data is not found in the HTML.  Maintain consistency with the specified field names and types. Prioritize accuracy and completeness, handling variations in LinkedIn's HTML structure robustly and gracefully managing missing elements MOST IMPORTANT DO NOT GIVE ANY NEW LINE CHARECTOR OR ANY OTHER SPECIAL CHARACTOR AS A PLAIN TEXT.
 
-```json
-{
-  {"name":"string","headline":"string","about":"string","location":"string","profile_url":"string","experience":[{"title":"string","company":"string","dates":"string","description":"string","location":"string"}],"education":[{"school":"string","degree":"string","field_of_study":"string","dates":"string"}],"skills":["string"],"certifications":[{"name":"string","issuing_authority":"string","dates":"string"}],"volunteer_experience":[{"role":"string","organization":"string","dates":"string","description":"string","cause":"string"}],"interests":["string"],"profile_image_url":"string"}
+    ```json
+    {
+      {"name":"string","headline":"string","about":"string","location":"string","profile_url":"string","experience":[{"title":"string","company":"string","dates":"string","description":"string","location":"string"}],"education":[{"school":"string","degree":"string","field_of_study":"string","dates":"string"}],"skills":["string"],"certifications":[{"name":"string","issuing_authority":"string","dates":"string"}],"volunteer_experience":[{"role":"string","organization":"string","dates":"string","description":"string","cause":"string"}],"interests":["string"],"profile_image_url":"string"}
 
-}''')
+    }'''
+  )
 
 
 
