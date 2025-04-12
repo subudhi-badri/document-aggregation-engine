@@ -65,6 +65,23 @@ def compare_data(resume_data, other_data):
         if not match_found:
             comparison_result["education"]["unmatched"].append({"resume": edu_entry1})
 
+    # Compare volunteer experience
+    for vol_entry1 in resume_data.get("volunteer_experience", []):
+        match_found = False
+        for vol_entry2 in other_data.get("volunteer_experience", []):
+            title1 = vol_entry1.get("title", "").lower()
+            title2 = vol_entry2.get("title", "").lower()
+            org1 = vol_entry1.get("organization", "").lower()
+            org2 = vol_entry2.get("organization", "").lower()
+            print(f"Comparing {title1 + ' ' + org1} with {title2 + ' ' + org2}")
+            if compare_strings(title1 + " " + org1, title2 + " " + org2):
+                comparison_result["volunteer_experience"]["matched"].append({"resume": vol_entry1, "other": vol_entry2})
+                match_found = True
+                break
+        
+        if not match_found:
+            comparison_result["volunteer_experience"]["unmatched"].append({"resume": vol_entry1})
+
     # Compare experience
     for exp_entry1 in resume_data.get("experience", []):
         match_found = False
@@ -73,14 +90,17 @@ def compare_data(resume_data, other_data):
             title2 = exp_entry2.get("title", "").lower()
             company1 = exp_entry1.get("company", "").lower()
             company2 = exp_entry2.get("company", "").lower()
-            
-            if compare_strings(title1, title2) and compare_strings(company1, company2):
+            print(f"Comparing {title1+" "+company1} with {title2+' '+company2}")
+            if compare_strings(title1+" "+company1, title2+" "+company2):
+                
                 comparison_result["experience"]["matched"].append({"resume": exp_entry1, "other": exp_entry2})
                 match_found = True
                 break
         
         if not match_found:
             comparison_result["experience"]["unmatched"].append({"resume": exp_entry1})
+
+
 
     # Compare skills
     skills1 = set(resume_data.get("skills", []))
@@ -102,8 +122,8 @@ def compare_data(resume_data, other_data):
             comparison_result["certifications"]["unmatched"].append({"resume": cert1})
 
     # Compare interests
-    interests1 = set(interest.get("name", "").lower() for interest in resume_data.get("interests", []))
-    interests2 = set(interest.get("name", "").lower() for interest in other_data.get("interests", []))
+    interests1 = set(interest.lower() for interest in resume_data.get("interests", []))
+    interests2 = set(interest.lower() for interest in other_data.get("interests", []))
     matched_interests = interests1.intersection(interests2)
     unmatched_interests = interests1-interests2
     comparison_result["interests"]["matched"].extend(list(matched_interests))
@@ -159,9 +179,9 @@ def generate_match_report(resume_data, other_data,person_id):
 
 def main():
     person_id = "prit44421"
-    linkedin_data_file_path = r'dataCompare\data\jsonFiles\json_linkdin.json'
+    linkedin_data_file_path = rf'dataCompare\data\jsonFiles\{person_id}_profile.json'
     other_data = load_json_file(linkedin_data_file_path)
-    resume_data_file_path = r'dataCompare\data\jsonFiles\json_resume.json'
+    resume_data_file_path = rf'dataCompare\data\jsonFiles\{person_id}_resume.json'
     resume_data = load_json_file(resume_data_file_path)
     print(generate_match_report(resume_data, other_data,person_id))
 

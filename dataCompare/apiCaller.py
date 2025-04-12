@@ -17,6 +17,7 @@ def llm_caller(prompt):
                     "You are an expert in document identity verification. "
                     "Compare two pieces of text to check if they refer to the same entity, "
                     "even with variations in abbreviations, name formats, or title differences. "
+                    "example Job in X is same as reserch analyst in X,core member in X is same as head in department of X"
                     "Respond with ONLY one word: '0' for no, '1' for yes. DO NOT provide explanations, thoughts, or additional text."
             },
             {"role": "user", "content": prompt}
