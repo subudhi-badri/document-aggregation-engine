@@ -352,15 +352,6 @@ def last_function(_name, _institute):
     num_entries = 5  # Define how many ORCID IDs to process
     process_orcid_entries(output_csv, num_entries)
 
-    # # Step 4: Upload all JSON files to MongoDB
-    # mongo_uri = "mongodb+srv://ujjwal2006:abcd5623@practice.mfobm.mongodb.net/?retryWrites=true&w=majority"
-    # db_name = "Practice"
-    # collection_name = "books"
-
-    # for json_file in os.listdir(output_dir):
-    #     file_path = os.path.join(output_dir, json_file)
-    #     mongoUploader.upload_json_to_mongodb(file_path, db_name, collection_name, mongo_uri)
-    #     print(f"Uploaded {json_file} to MongoDB")
 
 
 
