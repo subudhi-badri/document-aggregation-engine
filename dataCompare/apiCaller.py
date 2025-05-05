@@ -8,6 +8,7 @@ client = Groq(api_key=api_key)
 
 
 def llm_caller(prompt):
+    # print("Calling LLM with prompt:", prompt)  # Debugging print to see the prompt
     completion = client.chat.completions.create(
         model="deepseek-r1-distill-llama-70b",
         messages=[
@@ -28,7 +29,7 @@ def llm_caller(prompt):
         stream=False,
         stop=None,
     )
-    
+    # print(completion)  # Debugging print to see the full response object
     # Extract the response and clean it up
     original_response = completion.choices[0].message
     # print(original_response)  # Debugging print to see raw output

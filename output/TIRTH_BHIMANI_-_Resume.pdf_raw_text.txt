@@ -1,0 +1,85 @@
+TIRTH BHIMANI
+
+& +91 9906750394 & tirthbhimani304@gmail.com in in/tirth-bhimani-9781a31b2/ @ github.com/Tirth-304
+
+EDUCATION
+Course Institute Year of Passing Result
+Bachelor of Technology (CSE) IIT Jammu 2023 8.56 CGPA
+12th Standard Modi School 2019 86.30%
+10th Standard Dholakiya School 2017 92.5%
+
+WORK EXPERIENCE
+Nvidia
+System Software Engineer (Sept 2023 - Present)
+e Enhancing device driver for NVIDIA GeForce GPUs, with a focus on thermal issues and fan control algorithms using C/C++.
+e Collaborating with diagnostics software, hardware characterization, and platform/board teams throughout the entire life cycle of
+the SKU, including design, coding, bringup, testing, and maintenance.
+e Optimizing and solving problems in the GPU driver to ensure efficient and effective performance.
+Skills Acquired - Kernel Debugging, Device Driver Programming. C/C++
+Nvidia
+Software Engineering Intern (Jan 2023 - Jul 2023)
+Implemented Priority and Fairness feature in Kubernetes cluster for improved flow of requests
+Deployed IPMI exporter and Prometheus for hardware metrics monitoring with Grafana dashboard to visualize metrics
+Configured heap space and thread dump collection for improved remote debugging in Jenkins Pods
+Verified persistent volumes functionality on upgraded Trident version in ARM nodes
+
+Skills Acquired - Kubernetes, Prometheus, Grafana, Jenkins, Trident, Ansible Playbook, Linux
+
+Culinda Inc.
+
+Python Developer Intern (Apr 2022 - Jul 2022)
+e Developed the security system for FastAPls by adding an Authentication token system with Database Management.
+e Constructed Azure Functions for Registrant Alert, BrandAlert, Reverse Whois, and Page Parsing.
+e Enhanced the accuracy of Resume parser in Data Extraction and Designed UI for the same application.
+
+Skills Acquired- Attack Surface Management, FastAPI, Azure Function, AP! management with Python
+
+Infilytics Pvt. Ltd. @
+Machine Learning Intern (Jun 2021 - Jul 2021)
+e Streamlined 20% of the workflow of CAs by accurately providing the inconsistent entries in sales data.
+e Implemented time series forecasting on previous sales data to set the benchmark for future sales of the company.
+e Programmed the model in Python using ARIMA and RNNs to obtain the best accuracy for different datasets.
+Skills Acquired- Neural Networks, CNNs, RNNs, ARIMA & TensorFlow
+
+PROJECTS
+
+360° Omnidirectional Super Resolution for Images
+CVPR 2023 (Feb 2023 - Mar 2023)
+
+e Applied Liif Architecture and performed several tweaks to get the best WS-PSNR of 26.1527.
+
+e Generated more Downsampled images for given High-Resolution Images for dataset generalization.
+Applied Techniques - Image Downsampling Techniques, Super Resolution techniques
+
+Order Management System (7
+IIT Jammu (Mar 2022)
+e Developed a database with MySQL to store, manipulate and search a product & their orders for customers and suppliers.
+e Designed an ER model with 7 entities and translated the model into a relational schema for management system.
+Applied Techniques - Joins, Views, Regular Expression, Conditional Statements etc.
+
+Image Recognition 4
+(Aug 2021)
+e Developed several models for food recognition in images and tweaked properties of Neural networks to improve efficiency
+e Surpassed the accuracy of original dataset by ~37% margin (original data accuracy - 50.76, developed model accuracy - 87 )
+Applied Techniques - CNN, Data Augmentation, Data Preprocessing, Overfitting ReductionSKILLS
+
+Programming Languages _—_C,, C++, Python
+
+Technical Skills Kernel Programming, Kernel Debugging, Deep Learning, Machine Learning, Data Structure & Algorithms
+(DSA), Object Oriented Programming, Data Science
+
+DataBase Management MySQL, MongoDB
+
+DevOps Kubenetes, Jenkins, Prometheus, PromQL, Grafana, Ansible Playbook
+
+ADDITIONAL DETAILS
+
+Event Participation
+e Secured 2nd price in PDC Valorant Cup 2023
+Won Gold medal for CSE branch in IntrallT 8-ball pool championship 2023
+Represented IIT Jammu in Inter IIT Tech Meet 10.0 for Bosch Model Extraction (Based On Deep Learning, Cyber Security)
+Secured 6th state rank in Pitch Deck Competition 2022 for StartUp ideas
+
+Professional Development
+¢ CodeBlocks - Algo++ Course completion certificate
+e Microsoft Verzeo - Machine Learning Course completion certificate

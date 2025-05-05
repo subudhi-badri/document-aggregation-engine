@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 
-from commander import LINKEDIN_ACCEESS_TOKEN, LINKEDIN_ACCEESS_TOKEN_EXP, HEADLESS
+from LinkedIn.commander import LINKEDIN_ACCEESS_TOKEN, LINKEDIN_ACCEESS_TOKEN_EXP, HEADLESS
 
 # Setting up the options
 options = Options()

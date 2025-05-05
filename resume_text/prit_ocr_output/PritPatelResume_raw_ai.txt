@@ -1,0 +1,68 @@
+```json
+{
+  "name": "PRIT PATEL",
+  "contact_info": {
+    "email": "2023ucs0106@iitjammu.ac.in",
+    "phone": "+919313265834",
+    "linkedin": "https://www.linkedin.com/in/prit44421/",
+    "location": "Jammu, India"
+  },
+  "summary": "I am a motivated B.Tech Computer Science student at IIT Jammu. With a CGPA of 8.66, I possess a solid foundation in programming, robotics, and artificial intelligence/machine learning. My experience as a team leader in competitions has allowed me to apply my skills effectively. I am seeking internship opportunities to contribute to innovative projects and further develop my technical expertise.",
+  "experience": [],
+  "education": [
+    {
+      "school": "Indian Institute of Technology Jammu",
+      "degree": "Bachelor of Technology in Computer Science",
+      "field_of_study": "Computer Science",
+      "dates": "08/2023 - 05/2027",
+      "grades": "8.66 CGPA"
+    }
+  ],
+  "skills": [
+    "Algorithms",
+    "Artificial Intelligence",
+    "css",
+    "Data Structures",
+    "data structures and algorithms",
+    "HTML",
+    "Javascript",
+    "Machine Learning",
+    "Microcontrollers",
+    "Python",
+    "Robotics",
+    "C++"
+  ],
+  "certifications": [],
+  "projects": [
+    {
+      "title": "Micromouse Robot Design",
+      "description": "Led a team to design and build an autonomous micromouse robot capable of navigating complex mazes.\nImplemented efficient pathfinding algorithms and optimized sensor data processing.\nEnhanced leadership and technical skills in robotics engineering.",
+      "technologies": []
+    },
+    {
+      "title": "National Technical Challenges",
+      "description": "Represented IIT Jammu in national-level technical challenges against other IITs.\nNetworked with peers and exchanged knowledge on emerging technologies.",
+      "technologies": []
+    },
+    {
+      "title": "Real-world Problem Solving",
+      "description": "Collaborated on real-world problem statements provided by industries and government organizations.\nApplied technical knowledge to develop practical solutions within a competitive environment.",
+      "technologies": []
+    },
+    {
+      "title": "Industry Challenge",
+      "description": "Tackled industry-specific challenges focusing on problem-solving and technological innovation.\nGained exposure to real-world applications and enhanced software development skills.",
+      "technologies": []
+    }
+  ],
+  "languages": [
+    "English",
+    "Hindi",
+    "Gujarati"
+  ],
+  "achievements": [
+    "Leadership in Robotics and Achievement in Hackathon\nLed a team to design and build an autonomous micromouse robot capable of navigating complex mazes and achieved 3rd place in the NanoNavigator competition.",
+    "Solved over 200 problems on Leetcode"
+  ]
+}
+```

@@ -1,5 +1,6 @@
 import json
-from apiCaller import llm_caller
+
+from dataCompare.apiCaller import llm_caller
 def load_json_file(file_path):
     try:
         with open(file_path, 'r') as file:
@@ -20,6 +21,7 @@ def compare_strings(string1, string2):
     return result == "1"
 
 def compare_data(resume_data, other_data):
+    # print("Comparing data...")
     comparison_result = {
         "name": {"matched": [], "unmatched": []},
         "headline": {"matched": [], "unmatched": []},
@@ -47,7 +49,7 @@ def compare_data(resume_data, other_data):
         val2 = other_data.get(field, "")
         if val1 and val2:
             match_and_store(field, val1, val2)
-
+    # print("Compared Simple fields")
     # Compare education
     for edu_entry1 in resume_data.get("education", []):
         match_found = False
@@ -130,7 +132,7 @@ def compare_data(resume_data, other_data):
     comparison_result["interests"]["unmatched"].extend(unmatched_interests)
     print("comparison_result")
     print(comparison_result)
-    print()
+    print("exiting compare_data")
     print()
     return comparison_result
 
@@ -177,12 +179,13 @@ def generate_match_report(resume_data, other_data,person_id):
 
 
 
-def main():
-    person_id = "prit44421"
-    linkedin_data_file_path = rf'dataCompare\data\jsonFiles\{person_id}_profile.json'
-    other_data = load_json_file(linkedin_data_file_path)
-    resume_data_file_path = rf'dataCompare\data\jsonFiles\{person_id}_resume.json'
-    resume_data = load_json_file(resume_data_file_path)
-    print(generate_match_report(resume_data, other_data,person_id))
+# def main():
+#     person_id = "prit44421"
+#     linkedin_data_file_path = rf'dataCompare\data\jsonFiles\{person_id}_profile.json'
+#     other_data = load_json_file(linkedin_data_file_path)
+#     resume_data_file_path = rf'dataCompare\data\jsonFiles\{person_id}_resume.json'
+#     resume_data = load_json_file(resume_data_file_path)
+#     print(generate_match_report(resume_data, other_data,person_id))
 
-main()
+# main()
+

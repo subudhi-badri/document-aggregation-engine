@@ -1,9 +1,9 @@
 import google.generativeai as genai
-from commander import GENAI_API_KEY
+from LinkedIn.commander import GENAI_API_KEY
 import json
 
 def beautifier(linkedin_id):
-  filename = f"services/outputs/profile_json/{linkedin_id}_profile.json"
+  filename = fr"C:\prit\coding\projects\MiniProject\forgery_detection\LinkedIn\services\outputs\profile_json\{linkedin_id}_profile.json"
   with open(filename, "r", encoding='utf-8') as file:
       response = file.read()
       # Extract the JSON part from the response
@@ -44,8 +44,8 @@ model=genai.GenerativeModel(
 def json_generator(linkedin_id,html_content):
     print(f"Extracting JSON file for {linkedin_id}")
     response = model.generate_content(html_content)
-    # print(response)
-    filename = f"services/outputs/profile_json/{linkedin_id}_profile.json"
+    print(response)
+    filename = fr"C:\prit\coding\projects\MiniProject\forgery_detection\LinkedIn\services\outputs\profile_json\{linkedin_id}_profile.json"
     with open(filename, "w", encoding='utf-8') as file:
       file.write(str(response))
       # print(f"Successfully saved JSON to {filename}")

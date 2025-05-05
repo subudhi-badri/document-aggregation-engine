@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Verifier</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #0EA5E9;
+            --success: #10B981;
+            --error: #EF4444;
+            --text: #1F2937;
+            --text-light: #6B7280;
+            --bg: #F9FAFB;
+            --bg-card: #FFFFFF;
+            --border: #E5E7EB;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .intro {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .intro h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .intro p {
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: 6px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--secondary);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .file-upload label {
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .file-upload span {
+            display: block;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .file-upload input {
+            display: none;
+        }
+        
+        .selected-file {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background-color: rgba(79, 70, 229, 0.1);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s ease;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .results {
+            margin-top: 2rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+            margin: 1rem 0;
+        }
+        
+        .status-badge.success {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .status-badge.error {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+        
+        .comparison-section {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background-color: var(--bg);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+        
+        .comparison-section h3 { /* Category Title */
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+         .comparison-section h3:first-of-type {
+            margin-top: 0;
+         }
+
+        .comparison-section h4 { /* Matched/Unmatched Subtitle */
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .match-item, .mismatch-item {
+            margin: 0.75rem 0;
+            padding: 0.75rem 1rem; /* Increased padding */
+            border-radius: 4px;
+            font-size: 0.95rem; /* Slightly larger font */
+        }
+        
+        .match-item {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+        }
+        
+        .mismatch-item {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--error);
+        }
+
+        .match-item strong, .mismatch-item strong {
+             font-weight: 500;
+             color: var(--text);
+        }
+
+        .match-details, .mismatch-details {
+            margin-top: 0.5rem;
+            padding-left: 1rem;
+        }
+        .match-details ul, .mismatch-details ul {
+            list-style: none;
+            padding-left: 0;
+        }
+         .match-details li, .mismatch-details li {
+            margin-bottom: 0.3rem;
+         }
+        .match-details li strong, .mismatch-details li strong {
+            display: inline-block;
+            min-width: 100px; /* Align keys */
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        .arrow {
+            margin: 0 0.5rem;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-style: italic;
+            font-size: 0.9em;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .intro h2 {
+                font-size: 1.5rem;
+            }
+             .match-details li strong, .mismatch-details li strong {
+                 min-width: 80px; /* Adjust for smaller screens */
+             }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Resume Verification Tool</h1>
+    </div>
+    
+    <div class="container">
+        <div class="intro">
+            <h2>Document Identity Aggregation</h2>
+            <p>Upload your resume to verify its details against publicly available data online.</p>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                Upload Document
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/parse_resume" enctype="multipart/form-data">
+                    <div class="file-upload">
+                        <label for="resume-upload">Click to select a file</label>
+                        <span>Supported formats: PDF, DOC, DOCX</span>
+                        <input type="file" id="resume-upload" name="resume" accept=".pdf,.doc,.docx" required>
+                        <div id="selected-file" class="selected-file"></div>
+                    </div>
+                    <button type="submit" class="btn">Verify Resume</button>
+                </form>
+            </div>
+        </div>
+        
+        {% if result %}
+        <div class="results">
+            <div class="card">
+                <div class="card-header">
+                    Verification Results
+                </div>
+                <div class="card-body">
+                    {# --- Robust Check for report_content --- #}
+                    {% if result.report_content is mapping %} 
+                        <h3>Overall Match Status</h3>
+                        {# Determine overall status - check name exists and has matched items #}
+                        {% if result.report_content.get('name') and result.report_content.name.get('matched') %}
+                            <div class="status-badge success">✓ Verified Match (Name Found)</div>
+                        {% else %}
+                            <div class="status-badge error">✗ Potential Mismatch</div>
+                        {% endif %}
+                        
+                        <div class="comparison-section">
+                            <h2>Detailed Comparison</h2>
+                            
+                            {# Iterate through each category (name, education, etc.) #}
+                            {% for category, data in result.report_content.items() %}
+                                {# --- Check if data for category is a dictionary --- #}
+                                {% if data is mapping and (data.get('matched') or data.get('unmatched')) %}
+                                    <h3>{{ category.replace('_', ' ').title() }}</h3>
+                                    
+                                    {# Display Matched Items #}
+                                    {% if data.get('matched') %}
+                                        <h4>Matched Items:</h4>
+                                        {% for match in data.matched %}
+                                            {# --- Check if match itself is a dictionary --- #}
+                                            {% if match is mapping %}
+                                                <div class="match-item">
+                                                    {% if category == 'name' or category == 'headline' or category == 'location' %}
+                                                        {# Simple string comparison - ensure keys exist #}
+                                                        <strong>Resume:</strong> {{ match.get('resume', 'N/A') }} 
+                                                        <span class="arrow">→</span> 
+                                                        <strong>Found Online:</strong> {{ match.get('other', 'N/A') }}
+                                                    {% elif category == 'education' or category == 'experience' or category == 'volunteer_experience' %}
+                                                         {# Complex dictionary comparison - check if resume/other are mappings #}
+                                                         <div><strong>Resume:</strong></div>
+                                                         {% if match.get('resume') is mapping %}
+                                                             <div class="match-details">
+                                                                 <ul>
+                                                                 {% for key, value in match.resume.items() %}
+                                                                     {% if value %}<li><strong>{{ key.replace('_', ' ').title() }}:</strong> {{ value }}</li>{% endif %}
+                                                                 {% endfor %}
+                                                                 </ul>
+                                                             </div>
+                                                         {% else %}
+                                                             <div class="error-message">[Resume data is not in expected format: {{ match.get('resume') }}]</div>
+                                                         {% endif %}
+
+                                                         <div style="margin-top: 0.5rem;"><strong>Found Online:</strong></div>
+                                                         {% if match.get('other') is mapping %}
+                                                             <div class="match-details">
+                                                                 <ul>
+                                                                 {% for key, value in match.other.items() %}
+                                                                     {% if value %}<li><strong>{{ key.replace('_', ' ').title() }}:</strong> {{ value }}</li>{% endif %}
+                                                                 {% endfor %}
+                                                                 </ul>
+                                                             </div>
+                                                         {% else %}
+                                                              <div class="error-message">[Online data is not in expected format: {{ match.get('other') }}]</div>
+                                                         {% endif %}
+                                                    {% else %}
+                                                         {# Default fallback - assume simple structure #}
+                                                         <strong>Resume:</strong> {{ match.get('resume', 'N/A') }} 
+                                                         <span class="arrow">→</span> 
+                                                         <strong>Found Online:</strong> {{ match.get('other', 'N/A') }}
+                                                    {% endif %}
+                                                </div>
+                                            {% else %}
+                                                 <div class="match-item error-message">[Unexpected matched item format: {{ match }}]</div>
+                                            {% endif %} {# End check if match is mapping #}
+                                        {% endfor %} {# End loop data.matched #}
+                                    {% endif %} {# End if data.get('matched') #}
+
+                                    {# Display Unmatched Items (from Resume) #}
+                                    {% if data.get('unmatched') %}
+                                        <h4 style="margin-top: 1rem;">Unmatched Items (From Resume):</h4>
+                                         {% for item in data.unmatched %}
+                                            <div class="mismatch-item">
+                                                {% if item is mapping %} {# Check if item is a dictionary (like education) #}
+                                                    <div class="mismatch-details">
+                                                         <ul>
+                                                         {% for key, value in item.items() %}
+                                                             {% if value %}<li><strong>{{ key.replace('_', ' ').title() }}:</strong> {{ value }}</li>{% endif %}
+                                                         {% endfor %}
+                                                         </ul>
+                                                     </div>
+                                                {% elif item is string %} {# Explicitly check if it's a string #}
+                                                    {{ item }}
+                                                {% else %} {# Handle other unexpected types #}
+                                                     <span class="error-message">[Unexpected unmatched item type: {{ item }}]</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %} {# End loop data.unmatched #}
+                                    {% endif %} {# End if data.get('unmatched') #}
+                                    
+                                {% elif not data is mapping %} {# Handle case where category data is not a dict #}
+                                     <h3>{{ category.replace('_', ' ').title() }}</h3>
+                                     <div class="error-message">[Data for this category is not in the expected format: {{ data }}]</div>
+                                {% endif %} {# End check if data is mapping #}
+                            {% endfor %} {# End category loop #}
+                        </div> {# End comparison-section #}
+                    {% else %} 
+                        {# --- Handle case where result.report_content is not a dictionary --- #}
+                        <h3>Error</h3>
+                        <div class="status-badge error">✗ Verification Failed</div>
+                        <p>Could not parse the verification results. The data received was not in the expected format.</p>
+                        <p>Received: <code>{{ result.report_content }}</code></p>
+                    {% endif %} {# End check if result.report_content is mapping #}
+                </div> {# End card-body #}
+            </div> {# End card #}
+        </div> {# End results #}
+        {% elif result and result.error %} {# Display backend error if provided #}
+         <div class="results">
+            <div class="card">
+                <div class="card-header">
+                    Verification Error
+                </div>
+                 <div class="card-body">
+                     <div class="status-badge error">✗ Error Occurred</div>
+                     <p>An error occurred during processing:</p>
+                     <p><strong>{{ result.error }}</strong></p>
+                 </div>
+            </div>
+         </div>
+        {% endif %} {# End if result #}
+    </div> {# End container #}
+    
+    <div class="footer">
+        Mini Project Demonstration
+    </div>
+    
+    <script>
+        const fileInput = document.getElementById('resume-upload');
+        const fileDisplay = document.getElementById('selected-file');
+        
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileDisplay.textContent = `Selected: ${this.files[0].name}`; // Improved text
+                fileDisplay.style.display = 'block';
+            } else {
+                fileDisplay.textContent = ''; // Clear text
+                fileDisplay.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 from selenium import webdriver
 from time import sleep
-from services.scraping_utils import options, service, add_session_cookie
-from services.api import json_generator
+from LinkedIn.services.scraping_utils import options, service, add_session_cookie
+from LinkedIn.services.api import json_generator
 
 def scroll_to_bottom(driver):
     """Helper function to scroll to the bottom of a page"""
@@ -48,7 +48,9 @@ def scrape_full_profile(linkedin_id):
 
         # Dictionary to store all HTML content
         all_content = {}
-
+        # for i in range(50):
+            # sleep(1)  # Wait for the page to load
+            # print(i, "sleeping")
         # First scrape main profile
         main_page_html = scrape_page(driver, base_url)
         if main_page_html is None:
@@ -69,22 +71,29 @@ def scrape_full_profile(linkedin_id):
                 all_content[detail_page.rstrip('/')] = detail_html
 
         # Save combined content to file
-        filename = f"services/outputs/linkedin_profiles/{linkedin_id}_profile.html"
-        with open(filename, "w", encoding='utf-8') as file:
-            # Write main profile first
-            file.write("<!-- MAIN PROFILE -->\n")
-            file.write(all_content["main_profile"])
-            file.write("\n")
-            
-            # Write detail pages
-            for page_type, content in all_content.items():
-                if page_type != "main_profile":
-                    file.write(f"\n<!-- {page_type.upper()} -->\n")
-                    file.write(content)
-                    file.write("\n")
+        filename = fr"C:\prit\coding\projects\MiniProject\forgery_detection\LinkedIn\services\outputs\linkedin_profiles\{linkedin_id}_profile.html"
+        try:
+            # Ensure the directory exists
+            import os
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
 
-        print(f"Successfully saved combined HTML to {filename}")
-        
+            with open(filename, "w", encoding='utf-8') as file:
+                print(f"Attempting to write to {filename}...")
+                # Write main profile first
+                file.write("<!-- MAIN PROFILE -->\n")
+                file.write(all_content["main_profile"])
+                file.write("\n")
+                
+                # Write detail pages
+                for page_type, content in all_content.items():
+                    if page_type != "main_profile":
+                        file.write(f"\n<!-- {page_type.upper()} -->\n")
+                        file.write(content)
+                        file.write("\n")
+            print(f"Successfully saved combined HTML to {filename}")
+        except Exception as e:
+            print(f"Error writing to file {filename}: {e}")
+
         # Generate JSON from combined content
         json_generator(linkedin_id, all_content["main_profile"])  # You might want to modify this to handle all content
 
