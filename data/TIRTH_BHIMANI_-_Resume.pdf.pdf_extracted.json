@@ -1,0 +1,229 @@
+{
+  "resume": {
+    "name": "TIRTH BHIMANI",
+    "linkedin_id": "in/tirth-bhimani-9781a31b2/",
+    "contact_info": {
+      "email": "tirthbhimani304@gmail.com",
+      "phone": "+91 9906750394",
+      "location": ""
+    },
+    "summary": "",
+    "experience": [
+      {
+        "title": "System Software Engineer",
+        "company": "Nvidia",
+        "dates": "Sept 2023 - Present",
+        "description": "Enhancing device driver for NVIDIA GeForce GPUs, with a focus on thermal issues and fan control algorithms using C/C++. Collaborating with diagnostics software, hardware characterization, and platform/board teams throughout the entire life cycle of the SKU, including design, coding, bringup, testing, and maintenance. Optimizing and solving problems in the GPU driver to ensure efficient and effective performance.",
+        "location": ""
+      },
+      {
+        "title": "Software Engineering Intern",
+        "company": "Nvidia",
+        "dates": "Jan 2023 - Jul 2023",
+        "description": "Implemented Priority and Fairness feature in Kubernetes cluster for improved flow of requests. Deployed IPMI exporter and Prometheus for hardware metrics monitoring with Grafana dashboard to visualize metrics. Configured heap space and thread dump collection for improved remote debugging in Jenkins Pods. Verified persistent volumes functionality on upgraded Trident version in ARM nodes",
+        "location": ""
+      },
+      {
+        "title": "Python Developer Intern",
+        "company": "Culinda Inc.",
+        "dates": "Apr 2022 - Jul 2022",
+        "description": "Developed the security system for FastAPls by adding an Authentication token system with Database Management. Constructed Azure Functions for Registrant Alert, BrandAlert, Reverse Whois, and Page Parsing. Enhanced the accuracy of Resume parser in Data Extraction and Designed UI for the same application.",
+        "location": ""
+      },
+      {
+        "title": "Machine Learning Intern",
+        "company": "Infilytics Pvt. Ltd.",
+        "dates": "Jun 2021 - Jul 2021",
+        "description": "Streamlined 20% of the workflow of CAs by accurately providing the inconsistent entries in sales data. Implemented time series forecasting on previous sales data to set the benchmark for future sales of the company. Programmed the model in Python using ARIMA and RNNs to obtain the best accuracy for different datasets.",
+        "location": ""
+      }
+    ],
+    "education": [
+      {
+        "school": "IIT Jammu",
+        "degree": "Bachelor of Technology (CSE)",
+        "field_of_study": "CSE",
+        "dates": "2023",
+        "grades": "8.56 CGPA"
+      },
+      {
+        "school": "Modi School",
+        "degree": "12th Standard",
+        "field_of_study": "",
+        "dates": "2019",
+        "grades": "86.30%"
+      },
+      {
+        "school": "Dholakiya School",
+        "degree": "10th Standard",
+        "field_of_study": "",
+        "dates": "2017",
+        "grades": "92.5%"
+      }
+    ],
+    "skills": [
+      "C",
+      "C++",
+      "Python",
+      "Kernel Programming",
+      "Kernel Debugging",
+      "Deep Learning",
+      "Machine Learning",
+      "Data Structure & Algorithms (DSA)",
+      "Object Oriented Programming",
+      "Data Science",
+      "MySQL",
+      "MongoDB",
+      "Kubernetes",
+      "Jenkins",
+      "Prometheus",
+      "PromQL",
+      "Grafana",
+      "Ansible Playbook"
+    ],
+    "certifications": [
+      {
+        "name": "Algo++ Course completion certificate",
+        "issuing_authority": "CodeBlocks",
+        "dates": ""
+      },
+      {
+        "name": "Machine Learning Course completion certificate",
+        "issuing_authority": "Microsoft Verzeo",
+        "dates": ""
+      }
+    ],
+    "projects": [
+      {
+        "title": "360\u00b0 Omnidirectional Super Resolution for Images",
+        "description": "Applied Liif Architecture and performed several tweaks to get the best WS-PSNR of 26.1527. Generated more Downsampled images for given High-Resolution Images for dataset generalization.",
+        "technologies": [
+          "Image Downsampling Techniques",
+          "Super Resolution techniques"
+        ]
+      },
+      {
+        "title": "Order Management System",
+        "description": "Developed a database with MySQL to store, manipulate and search a product & their orders for customers and suppliers. Designed an ER model with 7 entities and translated the model into a relational schema for management system.",
+        "technologies": [
+          "Joins",
+          "Views",
+          "Regular Expression",
+          "Conditional Statements"
+        ]
+      },
+      {
+        "title": "Image Recognition",
+        "description": "Developed several models for food recognition in images and tweaked properties of Neural networks to improve efficiency. Surpassed the accuracy of original dataset by ~37% margin (original data accuracy - 50.76, developed model accuracy - 87)",
+        "technologies": [
+          "CNN",
+          "Data Augmentation",
+          "Data Preprocessing",
+          "Overfitting Reduction"
+        ]
+      }
+    ],
+    "languages": [],
+    "achievements": [
+      "Secured 2nd price in PDC Valorant Cup 2023",
+      "Won Gold medal for CSE branch in IntrallT 8-ball pool championship 2023",
+      "Represented IIT Jammu in Inter IIT Tech Meet 10.0 for Bosch Model Extraction (Based On Deep Learning, Cyber Security)",
+      "Secured 6th state rank in Pitch Deck Competition 2022 for StartUp ideas"
+    ]
+  },
+  "linkedin": [
+    {
+      "name": "TIRTH BHIMANI",
+      "headline": "System Software Engineer @Nvidia | Alumni@CSE, IITJ",
+      "about": "Think of me as the Batman of Computer Scienceu2014give me enough prep time, and no tech is too tough to crackIu2019m driven by a passion for software development and a love for solving problems. Whether it's diving into new technologies or breaking down real-world challenges, I bring a sharp, analytical approach to everything I tackle.",
+      "location": "Pune, Maharashtra, India",
+      "profile_url": "https://www.linkedin.com/in/tirth-bhimani-9781a31b2/",
+      "experience": [
+        {
+          "title": "System Software Engineer - II",
+          "company": "NVIDIA",
+          "dates": "May 2024 - Present u00b7 1 yr 1 mo",
+          "description": "Enhancing device driver for NVIDIA GeForce GPUs, with a focus on thermal issues and fan control algorithms using C/C++.Collaborating with diagnostics software, hardware characterization, and platform/board teams throughout the entire life cycle of the SKU, including design, coding, bringup, testing, and maintenance.Optimizing and solving problems in the GPU driver to ensure efficient and effective performance.",
+          "location": "Hybrid"
+        },
+        {
+          "title": "System Software Engineer",
+          "company": "NVIDIA",
+          "dates": "Sep 2023 - May 2024 u00b7 9 mos",
+          "description": "Implemented Priority and Fairness feature in Kubernetes cluster for improved flow of requestsDeployed IPMI exporter and Prometheus for hardware metrics monitoring with Grafana dashboard to visualize metricsConfigured heap space and thread dump collection for improved remote debugging in Jenkins PodsVerified persistent volumes functionality on upgraded Trident version in ARM nodes",
+          "location": null
+        },
+        {
+          "title": "Software Engineer Intern",
+          "company": "NVIDIA",
+          "dates": "Jan 2023 - Jul 2023 u00b7 7 mos",
+          "description": null,
+          "location": "Pune, Maharashtra, India u00b7 Remote"
+        },
+        {
+          "title": "Python Developer",
+          "company": "Culinda Inc.,",
+          "dates": "Apr 2022 - Jul 2022 u00b7 4 mos",
+          "description": "Secured FastAPIs by adding an Authentication token system with Database Management.Incorporated in developing Web Crawlers with Spider to extract links, iframes, images, etc. from Client Websites.Deployed Azure Functions for Registrant Alert, BrandAlert, Reverse Whois, and Open Ports &amp; Services.Increased accuracy of Resume parser in Data Extraction and Designed UI for the same application.",
+          "location": "Hyderabad, Telangana, India"
+        },
+        {
+          "title": "Machine Learning Specialist",
+          "company": "Infilytics Pvt. Ltd.",
+          "dates": "Jun 2021 - Jul 2021 u00b7 2 mos",
+          "description": "Streamlined 20% of the workflow of CAs by accurately providing the inconsistent entries in sales data.Implemented time series forecasting on previous sales data to set the benchmark for future sales of the company.Programmed the model in Python3 using ARIMA and RNNs to obtain the best accuracy for different datasets.",
+          "location": "Rajkot, Gujarat, India"
+        }
+      ],
+      "education": [
+        {
+          "school": "Indian Institute of Technology Jammu",
+          "degree": "Bachelor of Technology - BTech, Computer Science",
+          "field_of_study": "Computer Science",
+          "dates": "2019 - 2023"
+        }
+      ],
+      "skills": [
+        "Image Downsampling Techniques",
+        "Device Drivers",
+        "Linux",
+        "Prometheus.io",
+        "Python (Programming Language)",
+        "FastAPI",
+        "Machine Learning",
+        "Deep Learning",
+        "MySQL",
+        "Kubernetes"
+      ],
+      "certifications": [
+        {
+          "name": "InterIIT Tech Meet 10.0",
+          "issuing_authority": "Indian Institute of Technology, Kharagpur",
+          "dates": "Issued Aug 2022"
+        },
+        {
+          "name": "Flipkart Grid 2022",
+          "issuing_authority": "Flipkart",
+          "dates": "Issued Jul 2022"
+        }
+      ],
+      "volunteer_experience": [],
+      "interests": [
+        "Aman Gupta",
+        "Ankur Warikoo",
+        "kshitij gera",
+        "Mohammad Zaid",
+        "AMIT KUMAR YADAV",
+        "Bhanu Prakash",
+        "Supriyo Bhattacharya",
+        "IBM",
+        "Microsoft",
+        "Skill-Lync",
+        "Synopsys Inc",
+        "NVIDIA"
+      ],
+      "profile_image_url": "https://media.licdn.com/dms/image/v2/D4D03AQE-AKni4Q3x0w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1707409725737?e=1752105600&v=beta&t=ARB007f37ZbywymRwGcsxac4aBWkFXNGmXcgf6VeEvg"
+    },
+    null
+  ]
+}

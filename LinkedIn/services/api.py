@@ -48,7 +48,7 @@ def json_generator(linkedin_id,html_content):
     filename = fr"C:\prit\coding\projects\MiniProject\forgery_detection\LinkedIn\services\outputs\profile_json\{linkedin_id}_profile.json"
     with open(filename, "w", encoding='utf-8') as file:
       file.write(str(response))
-      # print(f"Successfully saved JSON to {filename}")
+      print(f"Successfully saved JSON to {filename}")
     beautifier(linkedin_id)
 
 

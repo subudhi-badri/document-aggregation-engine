@@ -93,7 +93,7 @@ def scrape_full_profile(linkedin_id):
             print(f"Successfully saved combined HTML to {filename}")
         except Exception as e:
             print(f"Error writing to file {filename}: {e}")
-
+        print(f"correct till not checkpoint 1 {filename}")
         # Generate JSON from combined content
         json_generator(linkedin_id, all_content["main_profile"])  # You might want to modify this to handle all content
 

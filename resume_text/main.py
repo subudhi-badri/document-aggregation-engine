@@ -8,11 +8,12 @@ from pdf2image import convert_from_path
 import google.generativeai as genai
 
 # === CONFIG ===
-GENAI_API_KEY = "AIzaSyAiZJnqIlE_wQQsM8sRA0ciyMglDuc5o7E"  # Replace with yours
+GENAI_API_KEY = "kjbjkbjk"  # Replace with yours
 POPPLER_PATH = r"C:\prit\coding\projects\MiniProject\forgery_detection\resume_text\poppler-24.08.0\Library\bin"  # Change to your Poppler bin path
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe" 
 
 genai.configure(api_key=GENAI_API_KEY)
+print(GENAI_API_KEY)
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
     system_instruction='''Extract structured resume info in the following JSON format and write "" empty string instead of null:
@@ -74,9 +75,9 @@ You are a resume parser. Return ONLY a valid JSON.
     try:
         response = model.generate_content(prompt)
         ai_text = response.text.strip()
-        with open(f"output/{resume_id}_raw_ai.txt", "w", encoding="utf-8") as f:
+        with open(f"resume_text/output/{resume_id}_raw_ai.txt", "w", encoding="utf-8") as f:
             f.write(ai_text)
-
+            print(f"[✓] AI response saved to output/{resume_id}_raw_ai.txt but ye kese hua ")
         ai_text = ai_text[ai_text.find("{"): ai_text.rfind("}") + 1]
         return json.loads(ai_text)
     except Exception as e:
@@ -101,13 +102,13 @@ def resume_extractor(file_path):
         print("[!] Unsupported file type.")
         return
 
-    os.makedirs("output", exist_ok=True)
-    with open(f"output/{resume_id}_raw_text.txt", "w", encoding="utf-8") as f:
+    os.makedirs("resume_text/output", exist_ok=True)
+    with open(f"resume_text/output/{resume_id}_raw_text.txt", "w", encoding="utf-8") as f:
         f.write(resume_text)
 
     final_json = json_generator(resume_id, resume_text)
     if final_json:
-        with open(f"output/{resume_id}.json", "w", encoding="utf-8") as f:
+        with open(f"resume_text/output/{resume_id}.json", "w", encoding="utf-8") as f:
             json.dump(final_json, f, indent=4, ensure_ascii=False)
         print(f"[✓] Extracted JSON saved to output/{resume_id}.json")
         return final_json
