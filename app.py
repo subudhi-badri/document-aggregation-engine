@@ -9,7 +9,6 @@ from dataCompare.main import compare_data
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads/'
-
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
@@ -39,7 +38,7 @@ def upload_resume():
         # Call extractors and store results
         if 'linkedin_id' in resume_data:
             # If LinkedIn ID is present, use direct extraction
-            linkedin_id = resume_data['linkedin_id'].split('/')[-1]
+            linkedin_id = resume_data['linkedin_id'].split('/')[-2]
             linkedin_data = linkedin_extractor("direct", linkedin_id)
         else:
             linkedin_data = linkedin_extractor("search",
@@ -53,7 +52,7 @@ def upload_resume():
         }
         
         # Save to file
-        output_path = os.path.join('data', 'profile_data.json')
+        output_path = os.path.join('data', f'{filename}_extracted.json')
         os.makedirs('data', exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(output_data, f, indent=2)
