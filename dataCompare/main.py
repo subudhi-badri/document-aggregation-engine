@@ -1,191 +1,128 @@
+# ==============================================================================
+#  dataCompare/main.py - FINAL VERSION USING DIRECT GOOGLE GEMINI API
+# ==============================================================================
+
+import os
 import json
+import google.generativeai as genai
+from dotenv import load_dotenv
+import backoff
+from google.api_core import exceptions as google_exceptions
 
-from dataCompare.apiCaller import llm_caller
-def load_json_file(file_path):
-    try:
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-            return data
-    except FileNotFoundError:
-        print(f"File {file_path} not found.")
-        return None
-    except json.JSONDecodeError:
-        print(f"Failed to parse JSON in file {file_path}.")
-        return None
+# --- Load Environment Variables ---
+load_dotenv()
 
+# --- Direct Google AI Client Configuration ---
+# Ensure your GOOGLE_API_KEY is set in your .env file
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
+    raise ValueError("GOOGLE_API_KEY not found in environment variables. Please check your .env file.")
+genai.configure(api_key=GOOGLE_API_KEY)
 
-def compare_strings(string1, string2):
-    # Compare two strings and return a similarity score
-    result=llm_caller(f"string 1 : {string1} , string 2 : {string2}")
-    print(f"string 1 : {string1} , string 2 : {string2}, result : {result}")
-    return result == "1"
+# This decorator will catch the specific "429 Resource Exhausted" error from Google
+# and retry with an exponential backoff.
+@backoff.on_exception(
+    backoff.expo,
+    google_exceptions.ResourceExhausted, # The specific exception for 429 errors
+    max_tries=4
+)
+def compare_multi_source_data(all_data):
+    """
+    Takes a dictionary with resume and multiple sources and asks the direct
+    Google Gemini API to perform a highly detailed, structured comparison.
+    """
+    data_str = json.dumps(all_data, indent=2)
 
-def compare_data(resume_data, other_data):
-    # print("Comparing data...")
-    comparison_result = {
-        "name": {"matched": [], "unmatched": []},
-        "headline": {"matched": [], "unmatched": []},
-        "location": {"matched": [], "unmatched": []},
-        "education": {"matched": [], "unmatched": []},
-        "experience": {"matched": [], "unmatched": []},
-        "skills": {"matched": [], "unmatched": []},
-        "certifications": {"matched": [], "unmatched": []},
-        "volunteer_experience": {"matched": [], "unmatched": []},
-        "interests": {"matched": [], "unmatched": []}
+    # ============================================================================ #
+    # === FINAL, UPGRADED PROMPT WITH SCORE & DISCREPANCY TYPES ================== #
+    # ============================================================================ #
+    prompt_template = """
+    You are a meticulous HR compliance analyst and data forensic expert. Your task is to conduct a deep comparison of a candidate's profile, aggregated from multiple sources.
+
+    Here is the aggregated data:
+    --- AGGREGATED JSON DATA ---
+    {json_data_placeholder}
+    --- END AGGREGATED JSON DATA ---
+
+    **Your Task:**
+    Return ONLY a single, valid JSON object that IS the final report. It must strictly adhere to this structure:
+    `{{ "consistency_score": <number>, "overall_summary": "...", "key_highlights": [], "discrepancies": [] }}`.
+
+    **1. Consistency Score (`consistency_score`):**
+    - You MUST provide a numerical score from 0 (completely different) to 100 (perfectly identical) representing the overall alignment between all provided sources.
+
+    **2. Overall Summary (`overall_summary`):**
+    - Provide a concise paragraph summarizing the candidate's profile and the consistency level, referencing the score.
+
+    **3. Key Highlights (`key_highlights`):**
+    - This should be a list summarizing the most important information from each platform.
+    - You MUST create ONLY ONE entry per source (e.g., one for 'GitHub', one for 'LinkedIn', one for 'Resume').
+    - For each source, summarize its key contributions in a comprehensive 'highlight' string. Use bullet points within the string (e.g., \\n- ) if there are multiple points.
+    - **If a source provides no significant information or was not available (e.g., contains an 'error' field), you MUST explicitly state that in the highlight string.**
+    
+    - Example of a good entry:
+      ```json
+      {
+        "source": "GitHub",
+        "highlight": "- Demonstrates active coding skills with 5 recent repositories.\n- Contributed to the open-source project 'data-validator'."
+      }
+      ```
+      ```json
+      {
+        "source": "LeetCode",
+        "highlight": "Has a strong competitive programming profile with 250+ problems solved, including 50 hard problems."
+      }
+      ```
+      ```json
+      {
+        "source": "Kaggle",
+        "highlight": "Achieved 'Contributor' tier, indicating participation in data science competitions."
+      }
+      ```
+    - Example for a missing source:
+      ```json
+      {
+        "source": "Google Scholar",
+        "highlight": "No Google Scholar profile was found or provided."
+      }
+      ```
+
+    **4. Detailed Discrepancies (`discrepancies`):**
+    - For each discrepancy, use this exact format:
+      `{"type": "...", "field": "...", "details": "...", "notes": "..."}`
+    
+    - ### CRITICAL RULE FOR THIS SECTION ###
+    - **Every single item in the 'discrepancies' list MUST be a complete JSON object with all four keys: 'type', 'field', 'details', and 'notes'.**
+    - **DO NOT include simple strings or incomplete objects in the list.**
+    
+    - **`type`**: You MUST categorize each discrepancy as one of the following strings: "Direct Contradiction", "Data Omission", or "Vague vs. Specific". This field is mandatory.
+    - **`field`**: The data field being compared (e.g., "Experience at TechCorp", "Contact Phone").
+    - **`details`**: A string summarizing the different values, e.g., "Resume: 'Software Engineer' vs. LinkedIn: 'Senior Software Engineer'".
+    - **`notes`**: Your brief analysis of the discrepancy's potential significance.
+    - If NO meaningful discrepancies are found, return an EMPTY LIST `[]`.
+    """
+
+    comparison_prompt = prompt_template.replace('{json_data_placeholder}', data_str)
+
+    # Configure the model for JSON output
+    generation_config = {
+        "response_mime_type": "application/json",
     }
-
-    def match_and_store(field, value1, value2):
-        """Helper function to match and store results."""
-        is_match = compare_strings(value1.lower(), value2.lower())
-        if is_match:
-            comparison_result[field]["matched"].append({"resume": value1, "other": value2})
-        else:
-            comparison_result[field]["unmatched"].append({"resume": value1, "other": value2})
-
-    # Compare simple string fields
-    simple_fields = ["name", "headline", "location"]
-    for field in simple_fields:
-        val1 = resume_data.get(field, "")
-        val2 = other_data.get(field, "")
-        if val1 and val2:
-            match_and_store(field, val1, val2)
-    # print("Compared Simple fields")
-    # Compare education
-    for edu_entry1 in resume_data.get("education", []):
-        match_found = False
-        for edu_entry2 in other_data.get("education", []):
-            school1 = edu_entry1.get("school", "").lower()
-            school2 = edu_entry2.get("school", "").lower()
-            degree1 = edu_entry1.get("degree", "").lower()
-            degree2 = edu_entry2.get("degree", "").lower()
-            
-            if compare_strings(school1, school2) and compare_strings(degree1, degree2):
-                comparison_result["education"]["matched"].append({"resume": edu_entry1, "other": edu_entry2})
-                match_found = True
-                break
-        
-        if not match_found:
-            comparison_result["education"]["unmatched"].append({"resume": edu_entry1})
-
-    # Compare volunteer experience
-    for vol_entry1 in resume_data.get("volunteer_experience", []):
-        match_found = False
-        for vol_entry2 in other_data.get("volunteer_experience", []):
-            title1 = vol_entry1.get("title", "").lower()
-            title2 = vol_entry2.get("title", "").lower()
-            org1 = vol_entry1.get("organization", "").lower()
-            org2 = vol_entry2.get("organization", "").lower()
-            print(f"Comparing {title1 + ' ' + org1} with {title2 + ' ' + org2}")
-            if compare_strings(title1 + " " + org1, title2 + " " + org2):
-                comparison_result["volunteer_experience"]["matched"].append({"resume": vol_entry1, "other": vol_entry2})
-                match_found = True
-                break
-        
-        if not match_found:
-            comparison_result["volunteer_experience"]["unmatched"].append({"resume": vol_entry1})
-
-    # Compare experience
-    for exp_entry1 in resume_data.get("experience", []):
-        match_found = False
-        for exp_entry2 in other_data.get("experience", []):
-            title1 = exp_entry1.get("title", "").lower()
-            title2 = exp_entry2.get("title", "").lower()
-            company1 = exp_entry1.get("company", "").lower()
-            company2 = exp_entry2.get("company", "").lower()
-            print(f"Comparing {title1+" "+company1} with {title2+' '+company2}")
-            if compare_strings(title1+" "+company1, title2+" "+company2):
-                
-                comparison_result["experience"]["matched"].append({"resume": exp_entry1, "other": exp_entry2})
-                match_found = True
-                break
-        
-        if not match_found:
-            comparison_result["experience"]["unmatched"].append({"resume": exp_entry1})
-
-
-
-    # Compare skills
-    skills1 = set(resume_data.get("skills", []))
-    skills2 = set(other_data.get("skills", []))
-    matched_skills = skills1.intersection(skills2)
-    unmatched_skills = skills1-skills2
-    comparison_result["skills"]["matched"].extend(list(matched_skills))
-    comparison_result["skills"]["unmatched"].extend(list(unmatched_skills))
-
-    # Compare certifications
-    for cert1 in resume_data.get("certifications", []):
-        match_found = False
-        for cert2 in other_data.get("certifications", []):
-            if compare_strings(cert1.get("name", ""), cert2.get("name", "")):
-                comparison_result["certifications"]["matched"].append({"resume": cert1, "other": cert2})
-                match_found = True
-                break
-        if not match_found:
-            comparison_result["certifications"]["unmatched"].append({"resume": cert1})
-
-    # Compare interests
-    interests1 = set(interest.lower() for interest in resume_data.get("interests", []))
-    interests2 = set(interest.lower() for interest in other_data.get("interests", []))
-    matched_interests = interests1.intersection(interests2)
-    unmatched_interests = interests1-interests2
-    comparison_result["interests"]["matched"].extend(list(matched_interests))
-    comparison_result["interests"]["unmatched"].extend(unmatched_interests)
-    print("comparison_result")
-    print(comparison_result)
-    print("exiting compare_data")
-    print()
-    return comparison_result
-
-
-def generate_match_report(resume_data, other_data,person_id):
-    comparison_result = compare_data(resume_data, other_data)
     
-    report = []
-    
-    def format_entry(entry):
-        if isinstance(entry, dict):
-            return " | ".join(f"{k}: {v}" for k, v in entry.items() if v)
-        elif isinstance(entry, str):
-            return entry
-        return "N/A"
+    # Select the Gemini model
+    model = genai.GenerativeModel(
+        "gemini-1.5-flash-latest",
+        generation_config=generation_config
+    )
 
-    
-    report.append("**Resume Matching Report**")
-    report.append("=" * 40)
+    try:
+        print("[*] Calling Google Gemini API for final analysis with scoring...")
+        response = model.generate_content(comparison_prompt)
+        ai_response_str = response.text
+        print("[✓] Received scored comparison report from Google AI.")
+        return ai_response_str
+    except Exception as e:
+        print(f"[!] An error occurred while calling the Google Gemini API for comparison: {e}")
+        return None
 
-    for section, results in comparison_result.items():
-        report.append(f"\n**{section.capitalize()}**")
-        
-        if results["matched"]:
-            report.append("\nMatched:")
-            for match in results["matched"]:
-                if isinstance(match, dict):
-                    report.append(f"  - {format_entry(match['resume'])} \n    ↔ Matched with ↔ \n  {format_entry(match['other'])}")
-                else:
-                    report.append(f"  - {match}")
-        
-        if results["unmatched"]:
-            report.append("\nUnmatched:")
-            for unmatched in results["unmatched"]:
-                print(unmatched)
-                if isinstance(unmatched, dict):
-                    report.append(f"  - {format_entry(unmatched)}")
-                else:
-                    report.append(f"  - {unmatched}")
-    with open(f"dataCompare/data/reports/{person_id}.md", "w+", encoding='utf-8') as file:
-        file.write("\n".join(report))
-    return "\n".join(report)
-
-
-
-
-# def main():
-#     person_id = "prit44421"
-#     linkedin_data_file_path = rf'dataCompare\data\jsonFiles\{person_id}_profile.json'
-#     other_data = load_json_file(linkedin_data_file_path)
-#     resume_data_file_path = rf'dataCompare\data\jsonFiles\{person_id}_resume.json'
-#     resume_data = load_json_file(resume_data_file_path)
-#     print(generate_match_report(resume_data, other_data,person_id))
-
-# main()
-
+# The old 'compare_json_data' function is no longer needed and has been removed.

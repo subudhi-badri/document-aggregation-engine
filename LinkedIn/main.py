@@ -1,42 +1,67 @@
-from LinkedIn.services.full_scrapper import scrape_full_profile
-from LinkedIn.services.search import search_with_name
-import os
-import json
+# ==============================================================================
+#  LinkedIn/main.py - CORRECTED INPUT FOR APIFY ACTOR
+# ==============================================================================
 
-def linkedin_extractor(method, identifier, school_or_company=None):
+from apify_client import ApifyClient
+import json
+import os
+from dotenv import load_dotenv
+# --- CONFIGURATION ---
+load_dotenv()  # Load environment variables from .env file
+APIFY_API_TOKEN = os.getenv("APIFY_API_TOKEN")
+LINKEDIN_SCRAPER_ACTOR_ID = "dev_fusion/linkedin-profile-scraper"
+
+def get_linkedin_data_via_api(linkedin_id):
     """
-    Get LinkedIn profile data either directly by ID or by searching with name
-    
-    Args:
-        method (str): 'direct' to use LinkedIn ID directly, 'search' to search by name
-        identifier (str): LinkedIn ID (for direct) or name (for search)
-        school_or_company (str, optional): School/company name for search method
-    
-    Returns:
-        dict: Profile data if successful, None if not found
-        str: Error message if applicable
+    Uses the Apify platform to run a LinkedIn scraping Actor and fetch the
+    clean JSON results using the correct input schema.
     """
     try:
-        if method == 'direct':
-            linkedin_id = identifier
-        elif method == 'search':
-            if not school_or_company:
-                return None, "school_or_company is required for search method"
-            linkedin_id = search_with_name(identifier, school_or_company)
-            if not linkedin_id:
-                return None, "LinkedIn profile not found"
-        else:
-            return None, "Invalid method - use 'direct' or 'search'"
-
-        # Scrape the profile
-        profile_infos = scrape_full_profile(linkedin_id)
+        client = ApifyClient(APIFY_API_TOKEN)
         
-        # Return the profile data directly
-        output_file = fr"C:\prit\coding\projects\MiniProject\forgery_detection\LinkedIn\services\outputs\profile_json\{linkedin_id}_profile.json"
-        if os.path.exists(output_file):
-            with open(output_file, "r") as f:
-                return json.load(f), None
-        return None, "Profile data not found"
-    
+        profile_url = f'https://www.linkedin.com/in/{linkedin_id}'
+        
+        # MODIFIED: Use the correct input schema required by this specific Actor.
+        # It wants a list of strings in a key named 'profileUrls'.
+        actor_input = {
+            "profileUrls": [profile_url],
+            "maxProfiles": 1,
+        }
+
+        print(f"[*] Starting Apify Actor '{LINKEDIN_SCRAPER_ACTOR_ID}' with correct input...")
+        
+        # Start the Actor run
+        run_info = client.actor(LINKEDIN_SCRAPER_ACTOR_ID).start(run_input=actor_input)
+
+        print("[*] Apify Actor run started. Waiting for it to finish...")
+
+        # Wait for the run to complete
+        run_detail = client.run(run_info['id']).wait_for_finish()
+
+        if run_detail['status'] != 'SUCCEEDED':
+            error_message = f"Apify Actor finished with status '{run_detail['status']}'. Check the run in the Apify Console for details."
+            print(f"[!] {error_message}")
+            return None, error_message
+
+        print("[*] Apify Actor run finished successfully. Fetching results...")
+        
+        items = [item for item in client.dataset(run_info['defaultDatasetId']).iterate_items()]
+
+        if not items:
+            return None, "Apify Actor finished but returned no data."
+
+        profile_json = items[0]
+        
+        if profile_json.get('error'):
+            return None, f"Apify Actor returned an error: {profile_json['error']}"
+            
+        print("[✓] Successfully received structured JSON from Apify.")
+        
+        # ... (save file logic) ...
+
+        return profile_json, None
+
     except Exception as e:
-        return None, f"Error occurred: {str(e)}"
+        error_message = f"An unexpected error occurred with the Apify API: {e}"
+        print(f"[!] {error_message}")
+        return None, error_message

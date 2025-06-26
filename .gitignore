@@ -1,18 +1,59 @@
-# Ignore output files
-LinkedIn/services/outputs/linkedin_profiles/*
-LinkedIn/services/outputs/profile_json/*
-dataCompare/data/reports/*
-dataCompare/data/jsonFiles/*
+# ==============================================================================
+#  .gitignore for Document Aggregation Project
+# ==============================================================================
 
-# Ignore Python compiled files
+# --- Python ---
+# Ignore the virtual environment folder
+venv/
+
+# Ignore Python bytecode and compiled files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.pyc
 
-# Ignore backup files
-*.backup
+# Ignore distribution and packaging artifacts
+*.egg-info/
+dist/
+build/
+*.egg
 
-# Ignore environment file
+# --- Environment & Secrets ---
+# CRITICAL: Ignore the file containing secret keys
 .env
+
+# --- Runtime Generated Files ---
+# Ignore log files, as they are specific to a single run
+*.log
+app.log
+
+# Ignore user-uploaded files
+uploads/
+
+# Ignore any generated output files (JSON, PDF reports, etc.)
+# This uses a wildcard to catch any 'output' directory
+**/output/
+# You can also be specific if you prefer
+# resume_text/output/
+# data_output/
+
+# --- IDE & Editor Configuration ---
+# Visual Studio Code
+.vscode/
+# PyCharm
+.idea/
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# --- OS-specific Files ---
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+Desktop.ini
+
+# --- Legacy Paths (from your original file) ---
+# It's good practice to keep these in case old files are still around
+LinkedIn/services/outputs/
+dataCompare/data/

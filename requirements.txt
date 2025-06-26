@@ -1,0 +1,39 @@
+# ==============================================================================
+#  Python Dependencies for the Document Aggregation Project
+# ==============================================================================
+
+# --- Core Web Framework & Extensions ---
+flask
+werkzeug
+flask-cors                  # For handling Cross-Origin Resource Sharing (CORS)
+
+# --- Asynchronous Task Processing ---
+celery[redis]               # The task queue itself, with Redis dependencies
+eventlet                    # Required for Celery to run on Windows
+
+# --- Database ---
+pymongo                     # The official MongoDB driver
+dnspython                   # For advanced MongoDB connection string features
+
+# --- API Clients & Utilities ---
+google-generativeai         # Official client for the Google Gemini API
+apify-client                # Official client for the Apify platform
+httpx                       # Modern HTTP client for direct API calls (GitHub, LeetCode)
+python-dotenv               # For loading secrets from the .env file
+backoff                     # For automatic, exponential-backoff retries on network errors
+
+# --- Resume & Document Parsing ---
+pdf2image                    # Converts PDF pages to images for OCR
+Pillow                      # Image manipulation library, a dependency for pdf2image/pytesseract
+pytesseract                 # Python wrapper for Google's Tesseract OCR engine
+python-docx                 # For reading text from .docx files (good fallback)
+
+# --- Web Scraping & HTML Parsing ---
+beautifulsoup4              # The main HTML parsing library
+lxml                        # A fast and efficient XML/HTML parser used by BeautifulSoup
+
+# --- File Generation ---
+WeasyPrint                  # For generating PDF reports from HTML/CSS
+
+# --- Error Monitoring & Logging ---
+sentry-sdk[flask,celery]    # Sentry SDK with integrations for Flask and Celery
