@@ -47,6 +47,19 @@
         .job-table th:nth-child(4) { width: 20%; } /* Date */
         .job-table th:nth-child(5) { width: 20%; } /* Status */
         .job-table th:nth-child(6) { width: 15%; } /* Actions */
+        #search-container {
+            margin-top: 1rem;
+            padding: 0 1rem 1rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        #search-input {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -87,6 +100,10 @@
                 <button id="compare-btn" class="btn btn-compare" disabled>Compare Selected (2-5)</button>
             </div>
 
+            <div id="search-container">
+                <input type="text" id="search-input" placeholder="Search by resume filename...">
+            </div>
+
             <div class="card-body">
                 <table class="job-table">
                     <thead>
@@ -111,8 +128,10 @@
         const tableBody = document.getElementById('job-table-body');
         const sortSelect = document.getElementById('sort');
         const compareBtn = document.getElementById('compare-btn');
+        const searchInput = document.getElementById('search-input');
         let pollingInterval;
         const selectedJobIds = new Set();
+        let allJobs = [];
 
         function updateCompareButtonState() {
             const count = selectedJobIds.size;
@@ -126,6 +145,23 @@
                 selectedJobIds.delete(checkbox.value);
             }
             updateCompareButtonState();
+        }
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const rows = tableBody.getElementsByTagName('tr');
+
+            for (const row of rows) {
+                const resumeCell = row.getElementsByTagName('td')[1];
+                if (resumeCell) {
+                    const resumeName = resumeCell.textContent.toLowerCase();
+                    if (resumeName.includes(searchTerm)) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+            }
         }
 
         function buildTable(jobs) {
@@ -171,6 +207,7 @@
                     </td>
                 `;
             });
+            filterTable();
             updateCompareButtonState();
         }
 
@@ -181,7 +218,11 @@
                 if (!response.ok) throw new Error(`API Error: ${response.status}`);
                 const data = await response.json();
                 if (data.error) throw new Error(data.error);
-                buildTable(data.jobs);
+                
+                allJobs = data.jobs;
+                
+                buildTable(allJobs);
+
             } catch (error) {
                 console.error("Failed to fetch or render job history:", error);
                 tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Error loading job history. Please check console and try again.</td></tr>';
@@ -200,6 +241,8 @@
                 window.location.href = `/compare?${queryParams.toString()}`;
             }
         });
+
+        searchInput.addEventListener('keyup', filterTable);
 
         document.addEventListener('DOMContentLoaded', () => {
             updateJobs();
