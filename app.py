@@ -193,31 +193,25 @@ def delete_job_route(job_id):
 
 @app.route('/api/history')
 def api_history():
-    """API endpoint that returns the list of all jobs as JSON, with robust sorting and serialization."""
-    
+    """API endpoint that returns a clean, serialized list of all jobs."""
     sort_by = request.args.get('sort', 'date_desc')
 
     try:
-        # --- Robust Fetch & Sort ---
-        base_query = jobs_collection.find({}, {"final_report": 0})
-        jobs_from_db = list(base_query)
+        jobs_from_db = list(jobs_collection.find({}, {"final_report": 0}))
 
-        # --- Safe Sorting in Python ---
+        # Safe Sorting in Python
         if sort_by == 'score_desc':
             jobs_from_db.sort(key=lambda j: j.get('consistency_score', -1), reverse=True)
         elif sort_by == 'score_asc':
             jobs_from_db.sort(key=lambda j: j.get('consistency_score', 999), reverse=False)
         elif sort_by == 'date_asc':
-            # Sort by date ascending, putting jobs without a date at the end
             jobs_from_db.sort(key=lambda j: j.get('created_at', datetime.min), reverse=False)
         else: # Default 'date_desc'
             jobs_from_db.sort(key=lambda j: j.get('created_at', datetime.min), reverse=True)
 
-        # --- Bulletproof Serialization ---
-        # Create a new list for the clean, serialized data
+        # Bulletproof Serialization
         serialized_jobs = []
         for job in jobs_from_db:
-            # For each job, only include the fields if they exist
             clean_job = {
                 '_id': str(job.get('_id')),
                 'resume_file': job.get('resume_file'),
@@ -232,6 +226,37 @@ def api_history():
     except Exception as e:
         app.logger.error(f"API error fetching job history: {e}", exc_info=True)
         return jsonify(error="Could not fetch job history."), 500
+
+
+@app.route('/compare')
+def compare_page():
+    """
+    Renders a side-by-side comparison page for selected candidates.
+    """
+    # Get the list of job_ids from the URL query parameters
+    # e.g., /compare?job_ids=id1&job_ids=id2
+    job_ids = request.args.getlist('job_ids')
+
+    if not job_ids or len(job_ids) < 2:
+        flash("Please select at least two completed reports to compare.", "warning")
+        return redirect(url_for('history_page'))
+
+    try:
+        # Fetch the full documents for the selected jobs
+        # We need the final_report, so we don't exclude it here.
+        jobs_to_compare = list(jobs_collection.find({"_id": {"$in": job_ids}}))
+
+        # Check if all requested jobs were found and are complete
+        if len(jobs_to_compare) != len(job_ids) or any(not j.get('final_report') for j in jobs_to_compare):
+             flash("One or more selected reports were not found or are incomplete.", "error")
+             return redirect(url_for('history_page'))
+
+        return render_template('compare.html', jobs=jobs_to_compare)
+
+    except Exception as e:
+        app.logger.error(f"Error fetching jobs for comparison: {e}", exc_info=True)
+        flash("An error occurred while preparing the comparison.", "error")
+        return redirect(url_for('history_page'))
 
 
 if __name__ == '__main__':

@@ -37,3 +37,6 @@ WeasyPrint                  # For generating PDF reports from HTML/CSS
 
 # --- Error Monitoring & Logging ---
 sentry-sdk[flask,celery]    # Sentry SDK with integrations for Flask and Celery
+
+# --- PDF Parsing ---
+pdfplumber                  # For parsing PDF files

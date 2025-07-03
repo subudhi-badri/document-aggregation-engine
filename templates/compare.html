@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Candidate Comparison</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5; --secondary: #10b981; --text: #1f2937;
+            --bg: #f9fafb; --bg-card: #ffffff; --border: #e5e7eb;
+        }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 2em; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 { font-size: 2.5rem; color: var(--primary); }
+        .nav-link { display: block; text-align: center; margin-bottom: 2rem; }
+        .btn { background-color: var(--primary); color: white; border: none; border-radius: 6px; padding: 0.5rem 1rem; text-decoration: none; }
+        
+        .comparison-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid var(--border);
+            padding: 1rem;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+        .comparison-table th { background-color: var(--bg); font-weight: 700; font-size: 1.2rem; }
+        .comparison-table .feature-col {
+            background-color: var(--bg);
+            font-weight: 500;
+            width: 15%; /* Fixed width for the feature column */
+        }
+        .score-display { font-size: 2rem; font-weight: 700; text-align: center; }
+        .highlight-list { list-style: none; padding-left: 0; }
+        .highlight-list li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Candidate Comparison</h1>
+        </div>
+        <div class="nav-link">
+            <a href="{{ url_for('history_page') }}" class="btn">← Back to History</a>
+        </div>
+        
+        <table class="comparison-table">
+            <!-- Table Header with Candidate Names -->
+            <thead>
+                <tr>
+                    <th class="feature-col">Feature</th>
+                    {% for job in jobs %}
+                        <th>{{ job.resume_file }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Consistency Score Row -->
+                <tr>
+                    <td class="feature-col">Consistency Score</td>
+                    {% for job in jobs %}
+                        <td class="score-display">{{ job.final_report.consistency_score or 'N/A' }}%</td>
+                    {% endfor %}
+                </tr>
+
+                <!-- Overall Summary Row -->
+                <tr>
+                    <td class="feature-col">AI Summary</td>
+                    {% for job in jobs %}
+                        <td>{{ job.final_report.overall_summary or 'N/A' }}</td>
+                    {% endfor %}
+                </tr>
+
+                <!-- Key Highlights Row -->
+                <tr>
+                    <td class="feature-col">Key Highlights</td>
+                    {% for job in jobs %}
+                        <td>
+                            {% if job.final_report.key_highlights %}
+                                <ul class="highlight-list">
+                                {% for highlight in job.final_report.key_highlights %}
+                                    <li><strong>{{ highlight.source }}:</strong> {{ highlight.highlight }}</li>
+                                {% endfor %}
+                                </ul>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

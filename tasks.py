@@ -7,6 +7,7 @@ from openai import OpenAI
 import httpx
 from dotenv import load_dotenv
 import logging
+import re
 
 # Import your scrapers and services
 from scrapers import linkedin_scraper, github_scraper, leetcode_scraper, kaggle_scraper
@@ -62,12 +63,9 @@ def process_verification_job(job_id):
         linkedin_id_raw = resume_data.get('linkedin_id')
         if linkedin_id_raw:
             # Clean the ID robustly before using it
-            import re
-            match = re.search(r'linkedin\.com/in/([^/]+)', linkedin_id_raw)
-            linkedin_id = match.group(1) if match else linkedin_id_raw.split('/in/')[-1].strip('/')
-
-            logger.info(f"[{job_id}] Scraping LinkedIn for: {linkedin_id}")
-            linkedin_result = linkedin_scraper.scrape(linkedin_id)
+            linkedin_username = linkedin_id_raw.strip('/').split('/')[-1]
+            logger.info(f"[{job_id}] Scraping LinkedIn for: {linkedin_username}")
+            linkedin_result = linkedin_scraper.scrape(linkedin_username)
             jobs_collection.update_one(
                 {"_id": job_id},
                 {"$set": {"data.sources.linkedin": {"status": "COMPLETED", "data": linkedin_result}}}
@@ -83,23 +81,16 @@ def process_verification_job(job_id):
         # --- 2. GitHub Scraper ---
         github_id_raw = resume_data.get('github_id')
         github_email = resume_data.get('contact_info', {}).get('email')
-        
-        # Try to find a usable GitHub identifier
-        github_id = None
+        github_username = None
         if github_id_raw:
-            # Extract username from URL if it's a URL
-            if 'github.com' in github_id_raw:
-                github_id = github_id_raw.split('github.com/')[-1].strip('/')
-            else:
-                github_id = github_id_raw
+            github_username = github_id_raw.strip('/').split('/')[-1]
         elif github_email:
-            # Fallback: derive from email
-            github_id = github_email.split('@')[0]
-            logger.info(f"[{job_id}] No GitHub ID in resume. Deriving from email: {github_id}")
+            github_username = github_email.split('@')[0]
+            logger.info(f"[{job_id}] No GitHub ID in resume. Deriving from email: {github_username}")
 
-        if github_id:
-            logger.info(f"[{job_id}] Scraping GitHub for: {github_id}")
-            github_result = github_scraper.scrape(github_id)
+        if github_username:
+            logger.info(f"[{job_id}] Scraping GitHub for: {github_username}")
+            github_result = github_scraper.scrape(github_username)
             jobs_collection.update_one(
                 {"_id": job_id},
                 {"$set": {"data.sources.github": {"status": "COMPLETED", "data": github_result}}}
@@ -112,12 +103,13 @@ def process_verification_job(job_id):
             )
 
         # --- 3. LeetCode Scraper ---
-        leetcode_id = resume_data.get('leetcode_id')
-        if leetcode_id:
-            # UPDATE STATUS *BEFORE* RUNNING THE SCRAPER
+        leetcode_id_raw = resume_data.get('leetcode_id')
+        if leetcode_id_raw:
+            # THE FIX: Clean the ID before using it
+            leetcode_username = leetcode_id_raw.strip('/').split('/')[-1]
             jobs_collection.update_one({"_id": job_id}, {"$set": {"status": "Processing: Scraping LeetCode..."}})
-            logger.info(f"Job {job_id}: Scraping LeetCode for: {leetcode_id}")
-            leetcode_result = leetcode_scraper.scrape(leetcode_id)
+            logger.info(f"Job {job_id}: Scraping LeetCode for: {leetcode_username}")
+            leetcode_result = leetcode_scraper.scrape(leetcode_username)
             jobs_collection.update_one(
                 {"_id": job_id},
                 {"$set": {"data.sources.leetcode": {"status": "COMPLETED", "data": leetcode_result}}}

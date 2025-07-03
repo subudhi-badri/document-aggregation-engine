@@ -19,9 +19,26 @@
         .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); font-weight: 500; font-size: 1.2rem; color: var(--primary); }
         .card-body { padding: 1.5rem; }
         .summary { font-style: italic; color: var(--text-light); line-height: 1.6; }
-        .discrepancy-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        .discrepancy-table th, .discrepancy-table td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; word-break: break-word; }
-        .discrepancy-table th { background-color: var(--bg); font-weight: 500; }
+        .discrepancy-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            table-layout: fixed; 
+        }
+        .discrepancy-table th, .discrepancy-table td { 
+            padding: 0.75rem 1rem; 
+            text-align: left; 
+            border-bottom: 1px solid var(--border); 
+            vertical-align: top; 
+            word-break: break-word; 
+        }
+        .discrepancy-table th:nth-child(1), .discrepancy-table td:nth-child(1) { width: 20%; }
+        .discrepancy-table th:nth-child(2), .discrepancy-table td:nth-child(2) { width: 20%; }
+        .discrepancy-table th:nth-child(3), .discrepancy-table td:nth-child(3) { width: 30%; }
+        .discrepancy-table th:nth-child(4), .discrepancy-table td:nth-child(4) { width: 30%; }
+        .discrepancy-table th { 
+            background-color: var(--bg); 
+            font-weight: 500; 
+        }
         .discrepancy-table td:nth-child(1) { font-weight: 500; }
         .discrepancy-table code { background-color: #eee; padding: 0.2em 0.4em; border-radius: 3px; font-size: 0.9em; }
         .insights-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }

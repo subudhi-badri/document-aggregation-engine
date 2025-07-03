@@ -11,6 +11,7 @@ from io import BytesIO
 from pdf2image import convert_from_path
 import google.generativeai as genai  # Import the new library
 from dotenv import load_dotenv
+import pdfplumber # Import the new library
 
 # --- Load Environment Variables ---
 load_dotenv()
@@ -74,6 +75,57 @@ def extract_text_from_docx(docx_path):
                 print("[!] DOCX image OCR failed:", e)
     return text.strip()
 
+# --- NEW: Structure-Aware Text & Link Extractor ---
+def extract_text_and_links_with_pdfplumber(file_path):
+    """
+    Extracts visible text AND hyperlink URLs from a PDF.
+    This is the primary, preferred method.
+    """
+    all_text = ""
+    print("[*] Attempting structured extraction with pdfplumber...")
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            for page in pdf.pages:
+                # Extract the visible text from the page
+                page_text = page.extract_text()
+                if page_text:
+                    all_text += page_text + "\n"
+                
+                # Extract all hyperlink URLs on the page
+                if page.hyperlinks:
+                    for link in page.hyperlinks:
+                        # Append the hidden URL to our text block so the AI can see it
+                        if 'uri' in link:
+                            all_text += f" [Link found: {link['uri']}] "
+                            
+        if all_text:
+            print("[✓] pdfplumber successfully extracted text and hyperlinks.")
+            return all_text
+        else:
+            print("[!] pdfplumber found no digital text. This might be a scanned document.")
+            return None
+    except Exception as e:
+        print(f"[!] An error occurred with pdfplumber: {e}")
+        return None
+
+# --- EXISTING: OCR-Based Text Extractor (Our Fallback) ---
+def extract_text_with_ocr(file_path):
+    """
+    Extracts text from a PDF using OCR. Use this as a fallback
+    for scanned documents.
+    """
+    print("[*] Falling back to OCR extraction with Tesseract...")
+    try:
+        images = convert_from_path(file_path, poppler_path=POPPLER_PATH)
+        full_text = ""
+        for img in images:
+            full_text += pytesseract.image_to_string(img) + "\n"
+        print("[✓] Tesseract OCR extraction completed.")
+        return full_text
+    except Exception as e:
+        print(f"[!] An error occurred during OCR extraction: {e}")
+        return ""
+
 # --- GOOGLE GEMINI JSON GENERATOR FUNCTION ---
 def generate_json_with_google(resume_text):
     """
@@ -107,33 +159,45 @@ def generate_json_with_google(resume_text):
 
 # --- MAIN FUNCTION ---
 def resume_extractor(file_path):
-    if not os.path.exists(file_path):
-        print("[!] File not found.")
-        return {"error": "File not found."}
-    resume_id = os.path.splitext(os.path.basename(file_path))[0]
-    ext = os.path.splitext(file_path)[1].lower()
-    if ext == ".pdf":
-        resume_text = extract_text_from_pdf(file_path)
-    elif ext == ".docx":
-        resume_text = extract_text_from_docx(file_path)
-    elif ext in [".jpg", ".jpeg", ".png"]:
-        resume_text = extract_text_from_image(Image.open(file_path))
+    """
+    Main function to extract resume data using a hybrid strategy.
+    Tries structured extraction first, then falls back to OCR.
+    """
+    filename = os.path.basename(file_path)
+    # Determine file type
+    if filename.endswith(".pdf"):
+        # 1. Try the primary method (pdfplumber) first
+        resume_text = extract_text_and_links_with_pdfplumber(file_path)
+
+        # 2. If it fails (returns None), use the fallback method (OCR)
+        if not resume_text:
+            resume_text = extract_text_with_ocr(file_path)
+
+    elif filename.endswith(".docx"):
+        # Existing docx logic
+        doc = docx.Document(file_path)
+        resume_text = "\n".join([para.text for para in doc.paragraphs])
     else:
-        print(f"[!] Unsupported file type: {ext}")
-        return {"error": f"Unsupported file type: {ext}"}
+        # Unsupported file type
+        return None
+
     if not resume_text:
-        print("[!] Text extraction failed. Document might be empty or unreadable.")
-        return {"error": "Text extraction failed. Document might be empty or unreadable."}
-    os.makedirs("resume_text/output", exist_ok=True)
-    with open(f"resume_text/output/{resume_id}_raw_text.txt", "w", encoding="utf-8") as f:
-        f.write(resume_text)
-    # Call the new Google-based function
+        print(f"[!] Failed to extract any text from {filename}.")
+        return None
+
+    # 3. Send the extracted text (which now includes hyperlinks) to the AI
     final_json = generate_json_with_google(resume_text)
+
     if final_json:
-        with open(f"resume_text/output/{resume_id}.json", "w", encoding="utf-8") as f:
-            json.dump(final_json, f, indent=4, ensure_ascii=False)
-        print(f"[✓] Extracted JSON saved to output/{resume_id}.json")
+        # Save the structured JSON to a file
+        output_dir = "resume_text/output"
+        os.makedirs(output_dir, exist_ok=True)
+        json_filename = os.path.splitext(filename)[0] + '.json'
+        json_filepath = os.path.join(output_dir, json_filename)
+        with open(json_filepath, 'w') as f:
+            json.dump(final_json, f, indent=4)
+        print(f"[✓] Extracted JSON saved to {json_filepath}")
         return final_json
     else:
-        print("[!] Failed to extract JSON using Google Gemini API.")
+        print("[!] Failed to generate structured JSON from the extracted text.")
         return None
